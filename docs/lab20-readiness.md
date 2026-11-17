@@ -42,11 +42,23 @@ streamlit run app.py
 
 ## Partner cold-run note — partner completes this section
 
-- Command followed from the README:
-- First failure, or `none`:
-- Elapsed time to a readable decision:
-- Where the result appeared:
-- Rerun result after the first fix:
+- Command followed from the README: not included in the feedback; obtain this from the partner.
+- First failure, or `none`: no execution failure was reported. The first issue was ambiguity over
+  whether the 25-point instability stopped automatic adoption or stopped the paper pilot itself.
+- Elapsed time to a readable decision: not included in the feedback; obtain this from the partner.
+- Where the result appeared: the partner identified the README, visible output, and decision memo.
+- Rerun result after the first fix: pending partner rerun.
+
+### Partner feedback received
+
+The partner could understand the investment recommendation from the repository alone and found the
+allocation, mandate, stress results, and baseline comparisons clear. The partner recommended:
+
+1. Distinguish the condition that blocks automatic adoption from the condition that stops the paper
+   pilot, because the 25-point change has already triggered the adoption gate.
+2. Add repository cloning instructions to the README.
+3. Incorporate the high-rate signal into the final adoption criteria.
+4. Prioritize decision-condition clarity rather than materially changing the optimization model.
 
 ## Changed input — student completes with AI closed
 
@@ -64,13 +76,16 @@ Open `search_lowest_risk` in `portfolio.py`.
 
 ## First fix
 
-- First failure fixed and pushed, with commit:
-- Or, if the partner cold run was clean: `No fix needed`:
+- Documentation and decision-logic fix: commit `49a0d97` distinguishes the automatic-adoption gate
+  from the paper-pilot stop rule, adds clone instructions, and makes the high-rate signal an explicit
+  adoption criterion.
+- Partner rerun after the fix: pending.
 
 ## Decision line
 
 **Pilot the lowest-risk feasible portfolio process; adopt only if every specified stress remains
-mandate-feasible and no asset allocation changes by more than 20 percentage points.**
+feasible, no allocation changes by more than 20 percentage points, and the high-rate signal clears
+or the estimates are revalidated; stop the paper pilot only if the base mandate or validation fails.**
 
 ## Reflection — complete with the partner
 
