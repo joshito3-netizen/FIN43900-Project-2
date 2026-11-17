@@ -63,12 +63,15 @@ changed-input run. The automated SPGM stress is useful validation but is not a s
 |---|---|---|---|---|
 | OpenAI Codex; exposed model/version not displayed | 2026-11-17 | Repository structure, Python engine, app, documentation, and tests | Recompute visible output; run eight automated tests; student reviews finance assumptions and decision | Accept only after student review |
 
-## Limitations and stop rules
+## Limitations and decision rules
 
-- Stop if any specified stress has no feasible portfolio.
-- Stop if the largest asset-weight change exceeds 20 points; the current 25-point result already
-  prevents adoption and limits the recommendation to a pilot.
-- Stop if the DGS10 as-of observation cannot be reproduced from the saved vintage rule.
+- Block automatic adoption if any specified stress has no feasible portfolio or the largest
+  asset-weight change exceeds 20 points; the current 25-point result limits the recommendation to
+  a pilot.
+- Block automatic adoption while DGS10 remains in the high-rate regime unless the return estimates
+  are revalidated and the exception is documented.
+- Stop the paper pilot only if the base portfolio fails the mandate, a validation test fails, or
+  the DGS10 as-of observation cannot be reproduced from the saved vintage rule.
 - Reassess if defensible forward-looking returns, drawdown limits, inflation risk, or realized
   transaction costs materially change the allocation.
 - Mechanical agreement validates implementation, not the truth of the estimates.

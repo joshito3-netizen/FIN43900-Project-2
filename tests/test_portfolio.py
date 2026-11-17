@@ -72,6 +72,10 @@ class ProjectTwoKnownAnswers(unittest.TestCase):
         result = evaluate_project()
         self.assertEqual(result["decision"], "PILOT")
         self.assertEqual(result["largest_stress_weight_change"], 0.25)
+        self.assertIn("automatically adopt", result["adoption_gate"])
+        self.assertIn("Stop the paper pilot only", result["pilot_stop_condition"])
+        self.assertIn("25%", result["decision_reason"])
+        self.assertIn("high-rate regime", result["decision_reason"])
 
 
 if __name__ == "__main__":

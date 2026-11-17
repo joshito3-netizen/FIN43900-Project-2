@@ -139,8 +139,10 @@ for case in frozen["stresses"]:
     )
 st.dataframe(pd.DataFrame(stress_rows), hide_index=True, use_container_width=True)
 st.caption(
-    "Stop rather than adopt if a specified stress becomes infeasible, if any asset moves more "
-    "than 20 points from base, or if the point-in-time signal cannot be reproduced."
+    "Automatic-adoption gate: do not adopt if a stress is infeasible, an asset moves more than "
+    "20 points, or the high-rate signal remains without revalidation. Paper-pilot stop rule: "
+    "stop only if the base mandate fails, a validation test fails, or the as-of signal cannot "
+    "be reproduced."
 )
 
 with SIGNAL_PATH.open(encoding="utf-8") as file:

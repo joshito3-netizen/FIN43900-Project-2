@@ -1,7 +1,7 @@
 {
   "as_of": "2026-09-30",
   "decision": "PILOT",
-  "decision_reason": "The process passes the base mandate but changes by more than 20 percentage points under a specified stress or loses feasibility.",
+  "decision_reason": "The base mandate passes, but automatic adoption is blocked because the largest stress allocation change is 25%, above 20%; DGS10 is in the high-rate regime and the return estimates have not been revalidated.",
   "mandate": {
     "objective_return": 0.065,
     "minimum_reserve": 0.03,
@@ -264,5 +264,6 @@
     "status": "HIGH-RATE REGIME",
     "downloaded_on": "2026-10-29"
   },
-  "stop_condition": "Stop rather than adopt if any specified stress has no feasible portfolio, the largest asset-weight change exceeds 20 points, or the saved signal cannot be reproduced with an as-of vintage."
+  "adoption_gate": "Do not automatically adopt if any specified stress has no feasible portfolio, the largest asset-weight change exceeds 20 points, or DGS10 remains in the saved high-rate regime without a documented revalidation of the return estimates.",
+  "pilot_stop_condition": "Stop the paper pilot only if the base portfolio fails the mandate, a validation test fails, or the required point-in-time signal cannot be reproduced. Stress instability blocks adoption but does not by itself stop observation in the pilot."
 }

@@ -12,9 +12,10 @@
 
 **Pilot the process; do not adopt it as an automatic allocation rule.** Authorize a monitored
 paper pilot using **60% SGOV and 40% SPGM**, with no allocation to SCHR or USIG in the base result.
-Adopt only after every specified stress remains mandate-feasible and no asset changes by more than
-20 percentage points. Stop the process if a stress becomes infeasible, the stability limit is
-breached, or the point-in-time signal cannot be reproduced from an as-of vintage.
+Automatic adoption requires every specified stress to remain mandate-feasible, no asset to change
+by more than 20 percentage points, and the high-rate signal to clear or the return estimates to be
+revalidated for that regime. Stop the paper pilot only if the base portfolio fails the mandate, a
+validation test fails, or the point-in-time signal cannot be reproduced from an as-of vintage.
 
 The base portfolio has a **6.86% gross expected return**, **6.74% net expected return** after a
 20-basis-point cost applied to 60% benchmark-relative turnover, **6.02% annualized volatility**,
@@ -48,8 +49,9 @@ discretionary trading band.
 
 The saved September 30, 2026 ALFRED vintage ends with DGS10 at **5.26% on September 29**. The
 predefined rule labels values above 5.00% a high-rate regime. That status blocks automatic adoption
-and triggers monthly review because the historical bond estimates may be unusually regime
-dependent. It does not overwrite the optimizer's inputs or weights.
+until the return estimates are revalidated and triggers monthly review because the historical bond
+estimates may be unusually regime dependent. It does not stop the paper pilot or overwrite the
+optimizer's inputs or weights.
 
 Monitor the following:
 

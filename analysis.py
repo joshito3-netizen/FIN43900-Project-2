@@ -83,15 +83,28 @@ def evaluate_project() -> dict[str, object]:
             weight_change(base["portfolio"]["weights"], case["portfolio"]["weights"])
             for case in comparable
         )
-        if len(comparable) != len(stress_cases) or largest_change > 0.20:
-            decision = "PILOT"
-            reason = (
-                "The process passes the base mandate but changes by more than 20 percentage "
-                "points under a specified stress or loses feasibility."
+        adoption_failures = []
+        if len(comparable) != len(stress_cases):
+            adoption_failures.append("at least one specified stress is infeasible")
+        if largest_change > 0.20:
+            adoption_failures.append(
+                f"the largest stress allocation change is {largest_change:.0%}, above 20%"
             )
+        if signal["status"] == "HIGH-RATE REGIME":
+            adoption_failures.append(
+                "DGS10 is in the high-rate regime and the return estimates have not been revalidated"
+            )
+        if adoption_failures:
+            decision = "PILOT"
+            reason = "The base mandate passes, but automatic adoption is blocked because " + "; ".join(
+                adoption_failures
+            ) + "."
         else:
             decision = "ADOPT"
-            reason = "The process passes the mandate and remains within the stability limit."
+            reason = (
+                "The process passes the mandate, remains within the stability limit, and clears "
+                "the point-in-time signal gate."
+            )
 
     return {
         "as_of": "2026-09-30",
@@ -111,10 +124,15 @@ def evaluate_project() -> dict[str, object]:
         "stresses": stress_cases,
         "largest_stress_weight_change": largest_change,
         "signal": signal,
-        "stop_condition": (
-            "Stop rather than adopt if any specified stress has no feasible portfolio, "
-            "the largest asset-weight change exceeds 20 points, or the saved signal cannot "
-            "be reproduced with an as-of vintage."
+        "adoption_gate": (
+            "Do not automatically adopt if any specified stress has no feasible portfolio, "
+            "the largest asset-weight change exceeds 20 points, or DGS10 remains in the saved "
+            "high-rate regime without a documented revalidation of the return estimates."
+        ),
+        "pilot_stop_condition": (
+            "Stop the paper pilot only if the base portfolio fails the mandate, a validation "
+            "test fails, or the required point-in-time signal cannot be reproduced. Stress "
+            "instability blocks adoption but does not by itself stop observation in the pilot."
         ),
     }
 
@@ -138,9 +156,9 @@ def render_markdown(result: dict[str, object]) -> str:
         "",
         f"**Decision: {result['decision']} as of {result['as_of']}.**",
         "",
-        "**Decision line:** Pilot the lowest-risk feasible process; adopt only if the largest "
-        "allocation change is no more than 20 percentage points across the specified stresses "
-        "and every case remains mandate-feasible.",
+        "**Decision line:** Pilot the lowest-risk feasible process; adopt only if every specified "
+        "stress remains feasible, the largest allocation change is no more than 20 percentage "
+        "points, and the high-rate signal is cleared or the return estimates are revalidated.",
         "",
         f"**Reason:** {result['decision_reason']}",
         "",
@@ -199,9 +217,11 @@ def render_markdown(result: dict[str, object]) -> str:
         f"**{signal['status']}**. This prevents automatic adoption and requires monthly review; "
         "it does not silently alter portfolio weights.",
         "",
-        "## Stop condition",
+        "## Decision conditions",
         "",
-        result["stop_condition"],
+        f"**Automatic-adoption gate:** {result['adoption_gate']}",
+        "",
+        f"**Paper-pilot stop rule:** {result['pilot_stop_condition']}",
         "",
         "## Limitations",
         "",

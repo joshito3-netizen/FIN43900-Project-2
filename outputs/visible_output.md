@@ -2,9 +2,9 @@
 
 **Decision: PILOT as of 2026-09-30.**
 
-**Decision line:** Pilot the lowest-risk feasible process; adopt only if the largest allocation change is no more than 20 percentage points across the specified stresses and every case remains mandate-feasible.
+**Decision line:** Pilot the lowest-risk feasible process; adopt only if every specified stress remains feasible, the largest allocation change is no more than 20 percentage points, and the high-rate signal is cleared or the return estimates are revalidated.
 
-**Reason:** The process passes the base mandate but changes by more than 20 percentage points under a specified stress or loses feasibility.
+**Reason:** The base mandate passes, but automatic adoption is blocked because the largest stress allocation change is 25%, above 20%; DGS10 is in the high-rate regime and the return estimates have not been revalidated.
 
 ## Mandate
 
@@ -45,9 +45,11 @@
 
 DGS10 was **5.26%** on 2026-09-29, the last observation available in the saved 2026-09-30 vintage. The rule labels values above 5.00% as a high-rate regime. Current status: **HIGH-RATE REGIME**. This prevents automatic adoption and requires monthly review; it does not silently alter portfolio weights.
 
-## Stop condition
+## Decision conditions
 
-Stop rather than adopt if any specified stress has no feasible portfolio, the largest asset-weight change exceeds 20 points, or the saved signal cannot be reproduced with an as-of vintage.
+**Automatic-adoption gate:** Do not automatically adopt if any specified stress has no feasible portfolio, the largest asset-weight change exceeds 20 points, or DGS10 remains in the saved high-rate regime without a documented revalidation of the return estimates.
+
+**Paper-pilot stop rule:** Stop the paper pilot only if the base portfolio fails the mandate, a validation test fails, or the required point-in-time signal cannot be reproduced. Stress instability blocks adoption but does not by itself stop observation in the pilot.
 
 ## Limitations
 
