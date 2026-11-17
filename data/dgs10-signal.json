@@ -1,0 +1,16 @@
+{
+  "series_id": "DGS10",
+  "name": "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity",
+  "source": "Federal Reserve Board H.15 via FRED/ALFRED",
+  "source_url": "https://fred.stlouisfed.org/series/DGS10",
+  "units": "Percent per year, not seasonally adjusted",
+  "frequency": "Daily on business days",
+  "publication_lag": "Approximately one business day",
+  "revision_rule": "Use the ALFRED vintage available on the decision date; never substitute today's full history.",
+  "as_known_on": "2026-09-30",
+  "observation_date": "2026-09-29",
+  "value": 5.26,
+  "threshold": 5.0,
+  "status": "HIGH-RATE REGIME",
+  "downloaded_on": "2026-10-29"
+}
