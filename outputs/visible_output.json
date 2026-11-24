@@ -1,14 +1,17 @@
 {
   "as_of": "2026-09-30",
   "decision": "PILOT",
-  "decision_reason": "The base mandate passes, but automatic adoption is blocked because the largest stress allocation change is 25%, above 20%; DGS10 is in the high-rate regime and the return estimates have not been revalidated.",
+  "decision_reason": "The base mandate passes, but automatic adoption is blocked because the largest absolute asset-weight change from the base case across specified stresses is 25 percentage points, above 20; DGS10 is in the high-rate regime and the return estimates have not been revalidated.",
   "mandate": {
     "objective_return": 0.065,
     "minimum_reserve": 0.03,
+    "effective_grid_minimum_reserve": 0.05,
+    "reserve_definition": "SGOV portfolio weight",
     "risk_measure": "Annualized volatility of monthly adjusted-close returns",
     "limits": "Long-only, fully invested, 5-point grid, at least 3% SGOV",
     "benchmark": "40% USIG / 60% SPGM",
-    "cost_bps": 20.0
+    "cost_bps": 20.0,
+    "turnover_definition": "0.5 times the sum of absolute target-minus-benchmark weights"
   },
   "estimates": {
     "assets": [
@@ -18,40 +21,40 @@
       "SPGM"
     ],
     "expected_returns": {
-      "SGOV": 0.037784459343550264,
-      "SCHR": -0.0014972917620458138,
-      "USIG": 0.0003817781875647248,
-      "SPGM": 0.11487360749284622
+      "SGOV": 0.037784459344,
+      "SCHR": -0.001497291762,
+      "USIG": 0.000381778188,
+      "SPGM": 0.114873607493
     },
     "volatilities": {
-      "SGOV": 0.0048244330950488155,
-      "SCHR": 0.05443830735372865,
-      "USIG": 0.07925777412413192,
-      "SPGM": 0.14870084682931495
+      "SGOV": 0.004824433095,
+      "SCHR": 0.054438307354,
+      "USIG": 0.079257774124,
+      "SPGM": 0.148700846829
     },
     "correlations": {
       "SGOV": {
         "SGOV": 1.0,
-        "SCHR": 0.24988890817799933,
-        "USIG": 0.2968218933875396,
-        "SPGM": 0.231072822041138
+        "SCHR": 0.249888908178,
+        "USIG": 0.296821893388,
+        "SPGM": 0.231072822041
       },
       "SCHR": {
-        "SGOV": 0.24988890817799933,
+        "SGOV": 0.249888908178,
         "SCHR": 1.0,
-        "USIG": 0.9228146871520817,
-        "SPGM": 0.5953455930063212
+        "USIG": 0.922814687152,
+        "SPGM": 0.595345593006
       },
       "USIG": {
-        "SGOV": 0.2968218933875396,
-        "SCHR": 0.9228146871520817,
+        "SGOV": 0.296821893388,
+        "SCHR": 0.922814687152,
         "USIG": 1.0,
-        "SPGM": 0.7786725039340927
+        "SPGM": 0.778672503934
       },
       "SPGM": {
-        "SGOV": 0.231072822041138,
-        "SCHR": 0.5953455930063212,
-        "USIG": 0.7786725039340927,
+        "SGOV": 0.231072822041,
+        "SCHR": 0.595345593006,
+        "USIG": 0.778672503934,
         "SPGM": 1.0
       }
     },
@@ -67,9 +70,9 @@
         "USIG": 0.4,
         "SPGM": 0.6
       },
-      "gross_return": 0.06907687577073363,
-      "net_return": 0.06907687577073363,
-      "volatility": 0.1156306264877666,
+      "gross_return": 0.069076875771,
+      "net_return": 0.069076875771,
+      "volatility": 0.115630626488,
       "reserve_weight": 0.0,
       "turnover": 0.0,
       "transaction_cost": 0.0,
@@ -91,9 +94,9 @@
         "USIG": 0.25,
         "SPGM": 0.25
       },
-      "gross_return": 0.03788563831547885,
-      "net_return": 0.03688563831547885,
-      "volatility": 0.065204805742159,
+      "gross_return": 0.037885638315,
+      "net_return": 0.036885638315,
+      "volatility": 0.065204805742,
       "reserve_weight": 0.25,
       "turnover": 0.5,
       "transaction_cost": 0.001,
@@ -110,17 +113,17 @@
     },
     "Inverse volatility": {
       "weights": {
-        "SGOV": 0.8460694517017718,
-        "SCHR": 0.07498038902967943,
-        "USIG": 0.05150037972435351,
-        "SPGM": 0.027449779544195203
+        "SGOV": 0.846069451702,
+        "SCHR": 0.07498038903,
+        "USIG": 0.051500379724,
+        "SPGM": 0.027449779544
       },
-      "gross_return": 0.03502892620359143,
-      "net_return": 0.03318682652212853,
-      "volatility": 0.013003758942243798,
-      "reserve_weight": 0.8460694517017718,
-      "turnover": 0.9210498407314512,
-      "transaction_cost": 0.0018420996814629024,
+      "gross_return": 0.035028926204,
+      "net_return": 0.033186826522,
+      "volatility": 0.013003758942,
+      "reserve_weight": 0.846069451702,
+      "turnover": 0.921049840731,
+      "transaction_cost": 0.001842099681,
       "rules": {
         "net_return": false,
         "reserve": true,
@@ -138,6 +141,8 @@
     "window_months": 59,
     "spgm_return_shift": 0.0,
     "cost_bps": 20.0,
+    "objective_return": 0.065,
+    "minimum_reserve": 0.03,
     "portfolio": {
       "weights": {
         "SGOV": 0.6,
@@ -145,9 +150,9 @@
         "USIG": 0.0,
         "SPGM": 0.4
       },
-      "gross_return": 0.06862011860326865,
-      "net_return": 0.06742011860326864,
-      "volatility": 0.060215113043149665,
+      "gross_return": 0.068620118603,
+      "net_return": 0.067420118603,
+      "volatility": 0.060215113043,
       "reserve_weight": 0.6,
       "turnover": 0.6,
       "transaction_cost": 0.0012,
@@ -167,6 +172,8 @@
       "window_months": 36,
       "spgm_return_shift": 0.0,
       "cost_bps": 20.0,
+      "objective_return": 0.065,
+      "minimum_reserve": 0.03,
       "portfolio": {
         "weights": {
           "SGOV": 0.85,
@@ -174,9 +181,9 @@
           "USIG": 0.0,
           "SPGM": 0.15
         },
-        "gross_return": 0.06881545723634097,
-        "net_return": 0.06711545723634098,
-        "volatility": 0.017852482534184762,
+        "gross_return": 0.068815457236,
+        "net_return": 0.067115457236,
+        "volatility": 0.017852482534,
         "reserve_weight": 0.85,
         "turnover": 0.85,
         "transaction_cost": 0.0017,
@@ -195,6 +202,8 @@
       "window_months": 59,
       "spgm_return_shift": -0.01,
       "cost_bps": 20.0,
+      "objective_return": 0.065,
+      "minimum_reserve": 0.03,
       "portfolio": {
         "weights": {
           "SGOV": 0.55,
@@ -202,9 +211,9 @@
           "USIG": 0.0,
           "SPGM": 0.45
         },
-        "gross_return": 0.06797457601073345,
-        "net_return": 0.06687457601073345,
-        "volatility": 0.06757784852425945,
+        "gross_return": 0.067974576011,
+        "net_return": 0.066874576011,
+        "volatility": 0.067577848524,
         "reserve_weight": 0.55,
         "turnover": 0.55,
         "transaction_cost": 0.0011,
@@ -223,6 +232,8 @@
       "window_months": 59,
       "spgm_return_shift": 0.0,
       "cost_bps": 100.0,
+      "objective_return": 0.065,
+      "minimum_reserve": 0.03,
       "portfolio": {
         "weights": {
           "SGOV": 0.55,
@@ -230,12 +241,42 @@
           "USIG": 0.0,
           "SPGM": 0.45
         },
-        "gross_return": 0.07247457601073345,
-        "net_return": 0.06697457601073345,
-        "volatility": 0.06757784852425945,
+        "gross_return": 0.072474576011,
+        "net_return": 0.066974576011,
+        "volatility": 0.067577848524,
         "reserve_weight": 0.55,
         "turnover": 0.55,
-        "transaction_cost": 0.0055000000000000005,
+        "transaction_cost": 0.0055,
+        "rules": {
+          "net_return": true,
+          "reserve": true,
+          "long_only": true,
+          "fully_invested": true
+        },
+        "passes_mandate": true,
+        "failed_rules": []
+      }
+    },
+    {
+      "name": "Constraint: net-return objective 7.0%",
+      "window_months": 59,
+      "spgm_return_shift": 0.0,
+      "cost_bps": 20.0,
+      "objective_return": 0.07,
+      "minimum_reserve": 0.03,
+      "portfolio": {
+        "weights": {
+          "SGOV": 0.55,
+          "SCHR": 0.0,
+          "USIG": 0.0,
+          "SPGM": 0.45
+        },
+        "gross_return": 0.072474576011,
+        "net_return": 0.071374576011,
+        "volatility": 0.067577848524,
+        "reserve_weight": 0.55,
+        "turnover": 0.55,
+        "transaction_cost": 0.0011,
         "rules": {
           "net_return": true,
           "reserve": true,
@@ -247,7 +288,10 @@
       }
     }
   ],
+  "all_stresses_feasible": true,
   "largest_stress_weight_change": 0.25,
+  "stability_limit": 0.2,
+  "stability_measure": "Maximum absolute change in any asset weight from the base allocation across the specified stresses; the cross-case range is descriptive and is not the gate.",
   "signal": {
     "series_id": "DGS10",
     "name": "Market Yield on U.S. Treasury Securities at 10-Year Constant Maturity",
@@ -264,6 +308,6 @@
     "status": "HIGH-RATE REGIME",
     "downloaded_on": "2026-10-29"
   },
-  "adoption_gate": "Do not automatically adopt if any specified stress has no feasible portfolio, the largest asset-weight change exceeds 20 points, or DGS10 remains in the saved high-rate regime without a documented revalidation of the return estimates.",
+  "adoption_gate": "Do not automatically adopt if any specified stress has no feasible portfolio, the maximum absolute change in any asset weight from the base allocation exceeds 20 percentage points, or DGS10 remains in the saved high-rate regime without a documented revalidation of the return estimates.",
   "pilot_stop_condition": "Stop the paper pilot only if the base portfolio fails the mandate, a validation test fails, or the required point-in-time signal cannot be reproduced. Stress instability blocks adoption but does not by itself stop observation in the pilot."
 }

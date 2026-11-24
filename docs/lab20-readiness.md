@@ -37,17 +37,54 @@ streamlit run app.py
   SPGM and a PASS mandate verdict without an exception.
 - Nonblocking warning: Streamlit recommends replacing deprecated `use_container_width=True` calls
   with `width="stretch"`.
-- AI-preflight fix: no fix was required for execution. The required partner must still record the
-  partner run and either its first fix or `No fix needed` below.
+- AI-preflight fix: no fix was required for execution. A later cold-run note reports that JSON
+  floats were rounded to 12 decimals and a fresh-clone rerun left the tree clean; that report is
+  recorded below and remains separate from the human partner's original run.
 
-## Partner cold-run note — partner completes this section
+## Partner cold-run note — Rocco Falls
 
-- Command followed from the README: not included in the feedback; obtain this from the partner.
-- First failure, or `none`: no execution failure was reported. The first issue was ambiguity over
-  whether the 25-point instability stopped automatic adoption or stopped the paper pilot itself.
-- Elapsed time to a readable decision: not included in the feedback; obtain this from the partner.
-- Where the result appeared: the partner identified the README, visible output, and decision memo.
-- Rerun result after the first fix: pending partner rerun.
+**Partner:** Rocco Falls
+
+**Run date supplied:** November 17, 2026
+
+**Source commit supplied:** `5ee3f04` (confirm; this commit was created November 23, 2026, after
+the supplied November 17 run date)
+
+Claude organized the partner's notes. The supplied date and commit do not agree: commit `5ee3f04`
+was created on November 23, 2026. Confirm the correct run date or source commit before treating
+this record as final.
+
+Commands followed from the README:
+
+```sh
+git clone https://github.com/joshito3-netizen/FIN43900-Project-2.git
+cd FIN43900-Project-2
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+python3 analysis.py
+python3 -m unittest discover -s tests -v
+streamlit run app.py
+```
+
+- First failure, or `none`: none; every command ran as written.
+- Elapsed time to a readable decision: about 28 seconds from clone through install, analysis, and tests.
+- Where the result appeared: terminal `PILOT` line and `outputs/visible_output.md`; Streamlit app served normally.
+- Test result: all eight tests passed; partner noted pandas 2.3.3 and Streamlit 1.67.0.
+- Rerun result after the first fix: the partner's Claude-organized note reports a fresh-clone rerun
+  on November 23, 2026, after JSON floats were rounded to 12 decimals; `git status` was clean after
+  `analysis.py`, and all eight tests passed. The current local code now applies the same 12-decimal
+  normalization, and this checkout passes 14 tests.
+
+### Issues found by the partner
+
+1. Running `analysis.py` changed the last digit of two correlation values in
+   `outputs/visible_output.json`; the decision did not change. The partner recommended rounding
+   floats before JSON export to make the clean-run check reproducible.
+2. The GitHub repository lacked local project work, including the newer tests, rubric coverage,
+   submission readiness, presentation, and recording script.
+3. When publishing local changes, preserve the completed GitHub version of
+   `docs/locked-changed-input-record.md`; do not replace it with a blank template.
 
 ### Partner feedback received
 
@@ -70,27 +107,37 @@ that this student-owned requirement has already been completed.
 
 Open `search_lowest_risk` in `portfolio.py`.
 
-- Partner's question:
-- My answer from the code:
-- Line I could not explain, or `none`:
+- Partner's question (as captured in Claude-organized notes): Why does the optimizer compare
+  `metrics["volatility"] < best["volatility"] - 1e-15` instead of using plain `<`?
+- My answer from the supplied notes: `search_lowest_risk` evaluates each portfolio on the five-point
+  grid, skips portfolios that fail a mandate rule, and retains the passing portfolio with the lowest
+  volatility. The tolerance prevents floating-point noise from replacing the current best; effective
+  ties are resolved by grid order. The function returns `None` when no portfolio passes.
+- Line I could not explain, or `none`: none reported in the supplied notes.
 
 ## First fix
 
 - Documentation and decision-logic fix: commit `49a0d97` distinguishes the automatic-adoption gate
   from the paper-pilot stop rule, adds clone instructions, and makes the high-rate signal an explicit
   adoption criterion.
-- Partner rerun after the fix: pending.
+- Partner rerun after the fix: reported above; correct the cited source commit if `5ee3f04` was not
+  the commit Rocco actually used for the November 17 cold run.
 
 ## Decision line
 
 **Pilot the lowest-risk feasible portfolio process; adopt only if every specified stress remains
-feasible, no allocation changes by more than 20 percentage points, and the high-rate signal clears
+feasible, no asset weight changes by more than 20 percentage points from the base allocation, and the high-rate signal clears
 or the estimates are revalidated; stop the paper pilot only if the base mandate or validation fails.**
 
 ## Reflection — complete with the partner
 
-1. What the cold run found that I could not see:
-2. What I will not touch before the deadline:
+1. What the cold run found that I could not see: the JSON export could differ in the last decimal
+   place between runs even though the decision was unchanged; the note recommends rounding floats.
+   It also noted that GitHub lagged behind the local project and warned not to overwrite the
+   completed locked record.
+2. What I will not touch before the deadline: the supplied note says not to change the price data,
+   return and volatility estimates, optimizer, or decision logic; only documentation and JSON
+   rounding should change.
 
 ## Checkout links
 

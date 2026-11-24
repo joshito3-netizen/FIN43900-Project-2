@@ -24,6 +24,7 @@ PRICE_PATH = ROOT / "data" / "prices.csv"
 SIGNAL_PATH = ROOT / "data" / "dgs10-signal.json"
 OUTPUT_JSON = ROOT / "outputs" / "visible_output.json"
 OUTPUT_MD = ROOT / "outputs" / "visible_output.md"
+ADOPTION_STABILITY_LIMIT = 0.20
 
 
 def _case(
@@ -31,14 +32,16 @@ def _case(
     window_months: int | None = None,
     spgm_shift: float = 0.0,
     cost_bps: float = DEFAULT_COST_BPS,
+    objective_return: float = OBJECTIVE_RETURN,
+    minimum_reserve: float = MINIMUM_RESERVE,
 ) -> dict[str, object]:
     estimates = load_estimates(PRICE_PATH, window_months=window_months)
     estimates["expected_returns"] = dict(estimates["expected_returns"])
     estimates["expected_returns"]["SPGM"] += spgm_shift
     portfolio = search_lowest_risk(
         estimates,
-        objective_return=OBJECTIVE_RETURN,
-        minimum_reserve=MINIMUM_RESERVE,
+        objective_return=objective_return,
+        minimum_reserve=minimum_reserve,
         cost_bps=cost_bps,
     )
     return {
@@ -46,6 +49,8 @@ def _case(
         "window_months": estimates["months_used"],
         "spgm_return_shift": spgm_shift,
         "cost_bps": cost_bps,
+        "objective_return": objective_return,
+        "minimum_reserve": minimum_reserve,
         "portfolio": portfolio,
     }
 
@@ -69,26 +74,32 @@ def evaluate_project() -> dict[str, object]:
         _case("Window: latest 36 returns", window_months=36),
         _case("Estimate: SPGM return minus 1 point", spgm_shift=-0.01),
         _case("Cost: 100 bps", cost_bps=100.0),
+        _case("Constraint: net-return objective 7.0%", objective_return=0.07),
     ]
     with SIGNAL_PATH.open(encoding="utf-8") as file:
         signal = json.load(file)
 
+    comparable = [case for case in stress_cases if case["portfolio"] is not None]
     if base["portfolio"] is None:
         decision = "REJECT"
         reason = "No portfolio passes the mandate in the base case."
         largest_change = None
     else:
-        comparable = [case for case in stress_cases if case["portfolio"] is not None]
         largest_change = max(
-            weight_change(base["portfolio"]["weights"], case["portfolio"]["weights"])
-            for case in comparable
+            (
+                weight_change(base["portfolio"]["weights"], case["portfolio"]["weights"])
+                for case in comparable
+            ),
+            default=None,
         )
         adoption_failures = []
         if len(comparable) != len(stress_cases):
             adoption_failures.append("at least one specified stress is infeasible")
-        if largest_change > 0.20:
+        if largest_change is not None and largest_change > ADOPTION_STABILITY_LIMIT:
             adoption_failures.append(
-                f"the largest stress allocation change is {largest_change:.0%}, above 20%"
+                "the largest absolute asset-weight change from the base case across specified "
+                f"stresses is {largest_change * 100:.0f} percentage points, above "
+                f"{ADOPTION_STABILITY_LIMIT * 100:.0f}"
             )
         if signal["status"] == "HIGH-RATE REGIME":
             adoption_failures.append(
@@ -102,8 +113,8 @@ def evaluate_project() -> dict[str, object]:
         else:
             decision = "ADOPT"
             reason = (
-                "The process passes the mandate, remains within the stability limit, and clears "
-                "the point-in-time signal gate."
+                "The process passes the mandate, remains within the base-relative stability gate, "
+                "and clears the point-in-time signal gate."
             )
 
     return {
@@ -113,21 +124,34 @@ def evaluate_project() -> dict[str, object]:
         "mandate": {
             "objective_return": OBJECTIVE_RETURN,
             "minimum_reserve": MINIMUM_RESERVE,
+            "effective_grid_minimum_reserve": 0.05,
+            "reserve_definition": "SGOV portfolio weight",
             "risk_measure": "Annualized volatility of monthly adjusted-close returns",
             "limits": "Long-only, fully invested, 5-point grid, at least 3% SGOV",
             "benchmark": "40% USIG / 60% SPGM",
             "cost_bps": DEFAULT_COST_BPS,
+            "turnover_definition": (
+                "0.5 times the sum of absolute target-minus-benchmark weights"
+            ),
         },
         "estimates": estimates,
         "baselines": baseline_results,
         "base": base,
         "stresses": stress_cases,
+        "all_stresses_feasible": len(comparable) == len(stress_cases),
         "largest_stress_weight_change": largest_change,
+        "stability_limit": ADOPTION_STABILITY_LIMIT,
+        "stability_measure": (
+            "Maximum absolute change in any asset weight from the base allocation across the "
+            "specified stresses; the cross-case range is descriptive and is not the gate."
+        ),
         "signal": signal,
         "adoption_gate": (
             "Do not automatically adopt if any specified stress has no feasible portfolio, "
-            "the largest asset-weight change exceeds 20 points, or DGS10 remains in the saved "
-            "high-rate regime without a documented revalidation of the return estimates."
+            "the maximum absolute change in any asset weight from the base allocation exceeds "
+            f"{ADOPTION_STABILITY_LIMIT * 100:.0f} percentage points, or DGS10 remains in the "
+            "saved high-rate regime "
+            "without a documented revalidation of the return estimates."
         ),
         "pilot_stop_condition": (
             "Stop the paper pilot only if the base portfolio fails the mandate, a validation "
@@ -157,8 +181,10 @@ def render_markdown(result: dict[str, object]) -> str:
         f"**Decision: {result['decision']} as of {result['as_of']}.**",
         "",
         "**Decision line:** Pilot the lowest-risk feasible process; adopt only if every specified "
-        "stress remains feasible, the largest allocation change is no more than 20 percentage "
-        "points, and the high-rate signal is cleared or the return estimates are revalidated.",
+        "stress remains feasible, the maximum absolute asset-weight change from the base case is "
+        f"no more than {result['stability_limit'] * 100:.0f} percentage points, and the high-rate "
+        "signal is cleared or "
+        "the return estimates are revalidated.",
         "",
         f"**Reason:** {result['decision_reason']}",
         "",
@@ -168,8 +194,10 @@ def render_markdown(result: dict[str, object]) -> str:
         f"- Universe: {', '.join(ASSETS)}",
         f"- Benchmark: {result['mandate']['benchmark']}",
         f"- Risk measure: {result['mandate']['risk_measure']}",
-        f"- Limits: {result['mandate']['limits']}",
+        f"- Limits: {result['mandate']['limits']} (effective SGOV minimum is 5% on the grid)",
+        f"- Reserve definition: {result['mandate']['reserve_definition']}",
         f"- One-way transaction cost assumption: {result['mandate']['cost_bps']:.0f} bps",
+        "- Turnover convention: 0.5 × sum of absolute target-minus-benchmark weights",
         "",
         "## Base decision numbers",
         "",
@@ -179,6 +207,9 @@ def render_markdown(result: dict[str, object]) -> str:
         f"- Annualized volatility: **{base['volatility']:.2%}**",
         f"- Reserve weight: **{base['reserve_weight']:.0%}**",
         f"- Mandate verdict: **{'PASS' if base['passes_mandate'] else 'FAIL'}**",
+        f"- Base turnover and cost: **{base['turnover']:.0%} × "
+        f"{result['mandate']['cost_bps']:.0f} bps = {base['transaction_cost']:.2%} "
+        f"({base['transaction_cost'] * 10_000:.0f} bps)**",
         "",
         "## Benchmark and baselines",
         "",
@@ -192,7 +223,7 @@ def render_markdown(result: dict[str, object]) -> str:
         "",
         "## Stress runs",
         "",
-        "| Case | Weights | Net return | Volatility | Mandate | Change from base |",
+        "| Case | Weights | Net return | Volatility | Base mandate | Max asset change from base |",
         "|---|---|---:|---:|---|---:|",
     ])
     for case in result["stresses"]:
@@ -204,8 +235,17 @@ def render_markdown(result: dict[str, object]) -> str:
             lines.append(
                 f"| {case['name']} | {format_weights(portfolio['weights'])} | "
                 f"{portfolio['net_return']:.2%} | {portfolio['volatility']:.2%} | "
-                f"PASS | {change:.0%} |"
+                f"PASS | {change * 100:.0f} points |"
             )
+    lines.extend([
+        "",
+        f"All {len(result['stresses'])} specified stresses are mandate-feasible. The adoption "
+        f"stability measure is the maximum absolute change in any asset weight from the base "
+        f"allocation, which is **{result['largest_stress_weight_change'] * 100:.0f} percentage "
+        "points**. The displayed "
+        "55%-85% SGOV and 15%-45% SPGM sensitivity ranges span 30 points across cases; that "
+        "cross-case spread is descriptive and is not the adoption-gate calculation.",
+    ])
     signal = result["signal"]
     lines.extend([
         "",
@@ -221,7 +261,8 @@ def render_markdown(result: dict[str, object]) -> str:
         "",
         f"**Automatic-adoption gate:** {result['adoption_gate']}",
         "",
-        f"**Paper-pilot stop rule:** {result['pilot_stop_condition']}",
+        f"**Paper-pilot stop rule:** {result['pilot_stop_condition']} The validation tests are "
+        "defined in [`docs/validation-and-ai-use.md`](../docs/validation-and-ai-use.md).",
         "",
         "## Limitations",
         "",
@@ -229,6 +270,8 @@ def render_markdown(result: dict[str, object]) -> str:
         "- The five-point grid can miss a lower-risk off-grid portfolio.",
         "- Volatility is not a complete measure of drawdown, inflation, or liquidity risk.",
         "- The cost model is a one-time linear estimate relative to the benchmark.",
+        "- DGS10 is point-in-time controlled, but the Yahoo adjusted-close history was downloaded "
+        "later and is not a historical vintage; later corporate-action adjustments may revise it.",
         "- The saved point-in-time signal is contextual and not a causal return forecast.",
         "",
     ])
@@ -240,10 +283,24 @@ def main() -> None:
 
     result = evaluate_project()
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_JSON.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    OUTPUT_JSON.write_text(
+        json.dumps(normalize_json_floats(result), indent=2) + "\n", encoding="utf-8"
+    )
     OUTPUT_MD.write_text(render_markdown(result), encoding="utf-8")
     print(f"{result['decision']}: {result['decision_reason']}")
     print(f"Visible output: {OUTPUT_MD.relative_to(ROOT)}")
+
+
+def normalize_json_floats(value):
+    """Round nested JSON floats so insignificant binary noise cannot dirty clean runs."""
+
+    if isinstance(value, float):
+        return round(value, 12)
+    if isinstance(value, dict):
+        return {key: normalize_json_floats(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [normalize_json_floats(item) for item in value]
+    return value
 
 
 if __name__ == "__main__":
