@@ -1,7 +1,46 @@
-DRAFT PLACEHOLDER — replace with the corrected transcript of the submitted Video 2.
+DRAFT RECORDING SCRIPT - replace with the corrected transcript after recording.
 
-The recorded video must open by identifying OpenAI Codex and how it was used, state that the
-analysis and decision are the student's, and state that the project is educational and not
-investment advice. Video 2 walks through the decision-number code and validation. Maximum
-duration: 5:00.
+OpenAI Codex assisted with the repository, code, documentation, tests, recording script, and
+committee deck. I reviewed the work, and the analysis and final decision are mine. This is an
+educational course project, not investment advice.
+
+The repository has one calculation engine. In portfolio.py, load_estimates reads the frozen CSV,
+checks the schema, dates, missing values, and positive prices, then calculates monthly returns.
+It annualizes the arithmetic mean by twelve and sample volatility by the square root of twelve.
+
+portfolio_metrics applies the finance conventions. Gross return is the weighted average of asset
+returns. Variance is weights times the covariance matrix times weights. One-way turnover is half
+the absolute change from the 40 percent USIG and 60 percent SPGM benchmark. The base portfolio has
+60 percent turnover, so 20 basis points times 60 percent equals a 12-basis-point cost. That bridge
+takes gross return from 6.86 percent to 6.74 percent net.
+
+search_lowest_risk enumerates all 1,771 long-only portfolios on a five-point grid. It keeps only
+fully invested portfolios that meet the return objective and reserve minimum, then selects the
+feasible portfolio with the lowest volatility. If none pass, it returns no feasible portfolio
+instead of weakening the mandate. Reserve means SGOV weight. Although the input floor is 3 percent,
+the five-point grid makes 5 percent the effective positive minimum.
+
+analysis.py calls the same engine for the frozen base case and four stresses. The stresses change
+the return window, SPGM expected return, transaction cost, and the net-return objective. It also
+loads the saved DGS10 data card and applies the adoption gate. The script writes both the readable
+Markdown output and a machine-readable JSON result. app.py imports the same functions, so the
+interface does not contain a second copy of the portfolio math.
+
+I reproduce the result with python3 analysis.py. I validate it with python3 -m unittest discover
+-s tests -v. The fourteen tests cover the base known answer, baseline failure reasons, the 1,771
+unique grid points, stress propagation, the transaction-cost bridge, the saved data boundary,
+invalid weights, a deliberately invalid price, the as-of signal, and the final pilot decision.
+
+The highest-risk claim is that the selected mix is usable beyond this sample. The latest-36-month
+test challenges that claim directly. The stability measure is the maximum absolute change in any
+asset weight from the 60 percent SGOV and 40 percent SPGM base. That measure is 25 points, above the
+20-point adoption threshold. The wider 30-point span between the 55 and 85 percent SGOV stress
+results is descriptive and is not the gate calculation.
+
+The main remaining limitations are that historical arithmetic returns are not forecasts,
+volatility omits drawdown and inflation risk, the grid is coarse, and the cost model omits taxes
+and market impact. DGS10 is point-in-time controlled, but the later-downloaded Yahoo adjusted
+closes are not a historical vintage and may contain later corporate-action revisions. A clean user
+can reproduce the visible output without credentials or a network connection after installing the
+listed dependencies.
 

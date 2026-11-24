@@ -1,7 +1,48 @@
-DRAFT PLACEHOLDER — replace with the corrected transcript of the submitted Video 3.
+DRAFT RECORDING SCRIPT - replace with the corrected transcript after recording.
 
-The recorded video must open with the app running live, identify OpenAI Codex and how it was used,
-state that the analysis and decision are the student's, and state that the project is educational
-and not investment advice. Present the pilot recommendation, allocation range, reversal condition,
-and monitoring triggers. Maximum duration: 5:00.
+[Begin with the Streamlit app already running.]
+
+OpenAI Codex assisted with the repository, code, documentation, tests, recording script, and
+committee deck. I reviewed the work, and the analysis and final decision are mine. This is an
+educational course project, not investment advice.
+
+I recommend a monitored paper pilot. I do not recommend automatic adoption today. I am asking the
+committee to authorize observation of the process, with monthly review and no funded allocation.
+
+The base portfolio is 60 percent SGOV and 40 percent SPGM, with zero in SCHR and USIG. It has a
+6.86 percent gross expected return. A 20-basis-point cost applied to 60 percent benchmark-relative
+turnover reduces that to 6.74 percent net. One-way turnover is half the sum of the absolute
+target-minus-benchmark weight changes, so 60 percent times 20 basis points produces a 12-basis-point
+cost. Annualized volatility is 6.02 percent. Reserve means SGOV weight, and the five-point grid makes
+the 3 percent setting a 5 percent effective minimum. The base case passes every base mandate rule.
+
+[Change the estimation window to the latest 36 monthly returns.]
+
+The live result changes to 85 percent SGOV and 15 percent SPGM. It still passes the mandate, but
+the maximum absolute asset-weight change from the base is 25 points, above the 20-point adoption
+threshold. Stability is an adoption gate, not a base mandate rule. This is the main reason I will
+not treat the base allocation as an automatic rule.
+
+The benchmark earns 6.91 percent net but fails the reserve rule. Equal weight and inverse
+volatility both fail the 6.5 percent return objective. These comparisons show that the constrained
+portfolio clears the written mandate, not that it dominates on every possible risk measure.
+
+All four frozen stresses are mandate-feasible. The observed allocation range is 55 to 85 percent
+SGOV and 15 to 45 percent SPGM. Its 30-point cross-case span is descriptive, not the stability-gate
+calculation or a trading band. A one-point reduction
+in SPGM expected return, a 100-basis-point cost, and a 7.0 percent return objective each produce
+55 percent SGOV and 45 percent SPGM.
+
+The point-in-time monitor also blocks adoption. The September 30, 2026 ALFRED vintage ends with
+DGS10 at 5.26 percent on September 29. That exceeds the predefined 5.00 percent high-rate
+threshold. The signal does not change weights. It requires monthly review and revalidation of the
+historical return estimates before adoption.
+
+I would reconsider automatic adoption only if every specified stress remains feasible, no asset
+moves more than 20 points from the base allocation, and the high-rate signal clears or I document a return-estimate
+revalidation for that regime. I would stop the paper pilot if the base portfolio fails the mandate,
+a validation test fails, or the as-of signal cannot be reproduced.
+
+The committee ask is to approve the paper pilot under those controls, require a monthly monitor,
+and withhold any funded allocation until the adoption gate passes.
 

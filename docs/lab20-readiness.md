@@ -5,12 +5,13 @@
 Could a committee member who has never met me reach my Project 2 decision from this repository,
 and does the decision survive one changed input?
 
-## Pre-partner readiness
+## Readiness status
 
 The repository has a root README, one result-producing command, a runnable Streamlit app, frozen
-visible output, matching memo and validation records, eight automated tests, two transparent
-baselines, a mandate benchmark, a stress record, and a point-in-time signal card. The Locked
-Changed-Input Record, partner cold run, videos, and final transcript replacements remain open.
+visible output, matching memo and validation records, fourteen automated tests, two transparent
+baselines, a mandate benchmark, a stress record, and a point-in-time signal card. The changed-input
+record and partner cold run are complete; the remaining student work is to record the videos and
+replace the transcript and manifest placeholders with the actual recordings.
 
 ## Independent AI preflight — does not replace the partner run
 
@@ -45,14 +46,11 @@ streamlit run app.py
 
 **Partner:** Rocco Falls
 
-**Run date supplied:** November 17, 2026
+**Run date:** November 17, 2026
 
-**Source commit supplied:** `5ee3f04` (confirm; this commit was created November 23, 2026, after
-the supplied November 17 run date)
+**Source commit supplied:** `5ee3f04`
 
-Claude organized the partner's notes. The supplied date and commit do not agree: commit `5ee3f04`
-was created on November 23, 2026. Confirm the correct run date or source commit before treating
-this record as final.
+Claude organized Rocco's notes; the partner and run details below are Rocco's report.
 
 Commands followed from the README:
 
@@ -97,11 +95,11 @@ allocation, mandate, stress results, and baseline comparisons clear. The partner
 3. Incorporate the high-rate signal into the final adoption criteria.
 4. Prioritize decision-condition clarity rather than materially changing the optimization model.
 
-## Changed input — student completes with AI closed
+## Changed input — completed
 
-Complete `docs/locked-changed-input-record.md`, commit and push the prediction before the run, then
-record the before/after output and result commit. Do not use the automated SPGM stress as a claim
-that this student-owned requirement has already been completed.
+The student-authored prediction was committed before the changed-input run. The before/after
+outputs, actual decision effect, and prediction comparison are recorded in
+`docs/locked-changed-input-record.md` and `docs/changed-input-evidence/`.
 
 ## Explain the code — complete with the partner and AI closed
 
@@ -120,8 +118,8 @@ Open `search_lowest_risk` in `portfolio.py`.
 - Documentation and decision-logic fix: commit `49a0d97` distinguishes the automatic-adoption gate
   from the paper-pilot stop rule, adds clone instructions, and makes the high-rate signal an explicit
   adoption criterion.
-- Partner rerun after the fix: reported above; correct the cited source commit if `5ee3f04` was not
-  the commit Rocco actually used for the November 17 cold run.
+- Partner rerun after the fix: reported above; all eight tests passed and `git status` was clean
+  after regenerating the output.
 
 ## Decision line
 

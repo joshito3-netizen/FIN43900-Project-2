@@ -12,15 +12,22 @@
 
 **Pilot the process; do not adopt it as an automatic allocation rule.** Authorize a monitored
 paper pilot using **60% SGOV and 40% SPGM**, with no allocation to SCHR or USIG in the base result.
-Automatic adoption requires every specified stress to remain mandate-feasible, no asset to change
-by more than 20 percentage points, and the high-rate signal to clear or the return estimates to be
-revalidated for that regime. Stop the paper pilot only if the base portfolio fails the mandate, a
-validation test fails, or the point-in-time signal cannot be reproduced from an as-of vintage.
+Automatic adoption requires every specified stress to remain mandate-feasible, the maximum
+absolute change in any asset weight from the base allocation to remain at or below 20 percentage
+points, and the high-rate signal to clear or the return estimates to be revalidated for that regime.
+The 20-point test is an adoption gate, not a base mandate rule. Stop the paper pilot only if the base
+portfolio fails the mandate, a validation test defined in `docs/validation-and-ai-use.md` fails, or
+the point-in-time signal cannot be reproduced from an as-of vintage.
 
 The base portfolio has a **6.86% gross expected return**, **6.74% net expected return** after a
 20-basis-point cost applied to 60% benchmark-relative turnover, **6.02% annualized volatility**,
-and **60% SGOV reserve weight**. It passes the 6.5% net-return objective, 3% reserve minimum,
-long-only rule, and fully-invested rule.
+and **60% SGOV reserve weight**. Reserve weight means the SGOV portfolio weight. It passes the 6.5%
+net-return objective, 3% reserve minimum, long-only rule, and fully-invested rule. Because the grid
+moves in five-point increments, the 3% setting creates a 5% effective positive minimum.
+
+One-way turnover equals `0.5 × Σ|target weight − benchmark weight|`. For the base allocation, that
+is `0.5 × (60% + 0% + 40% + 20%) = 60%`. The cost drag is therefore `60% × 20 bps = 12 bps`.
+The 0.5 factor prevents purchases and sales from double-counting the same rebalance.
 
 ## Mandate and comparisons
 
@@ -38,12 +45,14 @@ constrained portfolio is the lowest-volatility grid point that passes every rule
 The latest-36-month window changes the result to **85% SGOV / 15% SPGM**, a 25-point move, with
 6.71% net return and 1.79% volatility. Reducing SPGM's expected return by one point changes the
 mix to **55% SGOV / 45% SPGM**, with 6.69% net return and 6.76% volatility. Raising one-way cost
-to 100 bps produces the same 55/45 mix and a 6.70% net return.
+to 100 bps produces the same 55/45 mix and a 6.70% net return. Raising the mandate's net-return
+objective from 6.5% to 7.0% also produces 55% SGOV / 45% SPGM and a 7.14% net return.
 
-Every specified stress remains feasible, but the window stress exceeds the 20-point stability
-limit. That failure is why the recommendation is pilot rather than adopt. The observed feasible
-range is **55–85% SGOV and 15–45% SPGM**, with 0% SCHR and USIG; it is a sensitivity range, not a
-discretionary trading band.
+All four specified stresses remain mandate-feasible, but the window stress exceeds the 20-point
+base-relative adoption threshold. That failure is why the recommendation is pilot rather than
+adopt. The observed range is **55–85% SGOV and 15–45% SPGM**, with 0% SCHR and USIG. Its 30-point
+cross-case spread is descriptive; the adoption gate uses the largest change from the 60% SGOV / 40%
+SPGM base, which is 25 points. The range is a sensitivity result, not a discretionary trading band.
 
 ## Point-in-time signal and monitoring
 
@@ -66,4 +75,6 @@ Monitor the following:
 Historical means are estimates rather than forecasts. Volatility is incomplete as a risk measure,
 the grid is coarse, and the transaction-cost model is linear. The result concentrates in two ETFs,
 while the absence of SCHR and USIG is a model output rather than evidence that those assets lack
-economic value. A paper pilot is therefore proportional to the evidence; automatic adoption is not.
+economic value. DGS10 uses an as-of vintage, but the Yahoo adjusted-close history was downloaded
+after the decision date and may reflect later corporate-action adjustments. A paper pilot is
+therefore proportional to the evidence; automatic adoption is not.

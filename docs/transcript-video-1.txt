@@ -1,7 +1,29 @@
-DRAFT PLACEHOLDER — replace with the corrected transcript of the submitted Video 1.
+DRAFT RECORDING SCRIPT - replace with the corrected transcript after recording.
 
-The recorded video must open by identifying OpenAI Codex and how it was used, state that the
-analysis and decision are the student's, and state that the project is educational and not
-investment advice. Video 1 explains how the system and thinking changed and one AI output that
-was independently checked. Maximum duration: 3:00.
+OpenAI Codex assisted with the repository, code, documentation, tests, recording script, and
+committee deck. I reviewed the work, and the analysis and final decision are mine. This is an
+educational course project, not investment advice.
+
+My starting idea was to select the historical lowest-volatility portfolio that met a return
+target. The final system changed that idea into a mandate process. It now compares a benchmark,
+equal weight, inverse volatility, and the constrained portfolio. Each portfolio receives a clear
+pass or fail verdict, including the failed rule. The process also freezes a point-in-time signal
+and challenges the result with window, estimate, cost, and mandate-constraint stresses.
+
+The base result is 60 percent SGOV and 40 percent SPGM. It has a 6.74 percent net expected return
+and 6.02 percent annualized volatility. The result passes the base mandate, but I recommend a
+paper pilot rather than automatic adoption. The last 36 monthly returns move 25 percentage points
+from the base allocation in both SGOV and SPGM, above my 20-point adoption threshold. That
+threshold is not part of the base mandate. All four stresses remain mandate-feasible. The saved
+DGS10 vintage also shows a 5.26 percent rate, above the 5.00 percent high-rate threshold.
+
+One Codex-assisted change was the addition of a frozen constraint stress. I checked it by raising
+the net-return objective from 6.5 to 7.0 percent, rerunning the engine, and adding a test that
+asserts the result. The allocation changes to 55 percent SGOV and 45 percent SPGM, its net return
+is 7.14 percent, and the mandate still passes. I accepted the test because the visible output and
+the automated assertion agree with the finance logic: the higher objective requires more equity.
+
+My thinking changed from finding one optimum to deciding whether a process is stable enough for a
+committee to use. The evidence supports observing the process in a paper pilot, but it does not
+support treating the historical optimum as an automatic allocation rule.
 

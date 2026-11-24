@@ -19,6 +19,7 @@ from portfolio import (
     load_estimates,
     portfolio_metrics,
     search_lowest_risk,
+    weight_change,
 )
 
 
@@ -46,6 +47,7 @@ with st.sidebar:
         "One-way transaction cost (bps)", 0, 150, int(DEFAULT_COST_BPS), 5
     )
     st.caption("Weights are long-only, fully invested, and searched in five-point steps.")
+    st.caption("SGOV is the reserve asset. A 3% reserve setting becomes a 5% effective minimum on the grid.")
 
 window_months = 36 if window_label.startswith("Latest") else None
 estimates = load_estimates(PRICE_PATH, window_months=window_months)
@@ -60,9 +62,9 @@ candidate = search_lowest_risk(
 )
 
 if candidate is None:
-    st.error("MANDATE VERDICT: FAIL — no portfolio on the five-point grid passes every rule.")
+    st.error("BASE MANDATE: FAIL — no portfolio on the five-point grid passes every base rule.")
 else:
-    st.success("MANDATE VERDICT: PASS — the displayed constrained portfolio passes every rule.")
+    st.success("BASE MANDATE: PASS — the displayed constrained portfolio passes every base rule.")
     st.subheader("Constrained portfolio")
     weight_columns = st.columns(len(ASSETS))
     for column, asset in zip(weight_columns, ASSETS):
@@ -73,6 +75,11 @@ else:
     metric_columns[1].metric("Annualized volatility", f"{candidate['volatility']:.2%}")
     metric_columns[2].metric("SGOV reserve", f"{candidate['reserve_weight']:.0%}")
     metric_columns[3].metric("Turnover vs benchmark", f"{candidate['turnover']:.0%}")
+    st.caption(
+        "One-way turnover = 0.5 × Σ|target weight − benchmark weight|. "
+        f"Selected cost drag = {candidate['turnover']:.0%} × {cost_bps} bps "
+        f"= {candidate['transaction_cost'] * 10_000:.0f} bps."
+    )
 
 st.subheader("Benchmark and transparent baselines")
 rows = []
@@ -107,7 +114,7 @@ if candidate is not None:
             "Failed rules": "none",
         }
     )
-st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+st.dataframe(pd.DataFrame(rows), hide_index=True, width="stretch")
 
 with st.expander("Inputs and estimates", expanded=False):
     estimate_rows = [
@@ -122,25 +129,35 @@ with st.expander("Inputs and estimates", expanded=False):
         f"The selected window uses {estimates['months_used']} monthly returns from "
         f"{estimates['start_date']} through {estimates['end_date']}."
     )
-    st.dataframe(pd.DataFrame(estimate_rows), hide_index=True, use_container_width=True)
+    st.dataframe(pd.DataFrame(estimate_rows), hide_index=True, width="stretch")
 
 frozen = evaluate_project()
 st.subheader("Frozen stress conclusion")
 st.write(f"**Project recommendation: {frozen['decision']}.** {frozen['decision_reason']}")
+if frozen["decision"] == "PILOT":
+    st.error("ADOPTION GATE: BLOCKED — the base mandate still passes, so the paper pilot may continue.")
 stress_rows = []
+base_weights = frozen["base"]["portfolio"]["weights"]
 for case in frozen["stresses"]:
     result = case["portfolio"]
+    change = None if result is None else weight_change(base_weights, result["weights"])
     stress_rows.append(
         {
             "Case": case["name"],
             "Weights": "No feasible portfolio" if result is None else format_weights(result["weights"]),
-            "Mandate": "FAIL" if result is None else "PASS",
+            "Base mandate": "INFEASIBLE" if result is None else "PASS",
+            "Max asset change from base": "N/A" if change is None else f"{change * 100:.0f} points",
+            "Adoption stability gate": (
+                "INFEASIBLE" if change is None else ("BLOCK" if change > 0.20 else "PASS")
+            ),
         }
     )
-st.dataframe(pd.DataFrame(stress_rows), hide_index=True, use_container_width=True)
+st.dataframe(pd.DataFrame(stress_rows), hide_index=True, width="stretch")
 st.caption(
-    "Automatic-adoption gate: do not adopt if a stress is infeasible, an asset moves more than "
-    "20 points, or the high-rate signal remains without revalidation. Paper-pilot stop rule: "
+    "All four frozen stresses are mandate-feasible. Stability means the maximum absolute change "
+    "in any asset weight from the base allocation, not the widest cross-case range. Do not adopt "
+    "if that change exceeds 20 points or the high-rate signal remains without revalidation. "
+    "Paper-pilot stop rule: "
     "stop only if the base mandate fails, a validation test fails, or the as-of signal cannot "
     "be reproduced."
 )
