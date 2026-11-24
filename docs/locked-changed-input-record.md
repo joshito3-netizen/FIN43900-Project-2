@@ -6,14 +6,14 @@ preserve the before/after output and result commit.
 
 ## Pre-run prediction — write with AI closed
 
-- Material input:
-- Input location:
-- Old value and units:
-- New value and units:
-- Expected direction of allocation, net return, volatility, and mandate verdict:
-- Expected decision effect:
-- Failure condition:
-- Prediction commit hash:
+- Material input: Net-return objective.
+- Input location: Optimizer mandate setting; see the student-authored prediction in [`Prediction.docx`](../Prediction.docx).
+- Old value and units: 6.5% net expected return.
+- New value and units: 7.0% net expected return.
+- Expected direction of allocation, net return, volatility, and mandate verdict: The prediction expected more SPGM, a 55% SGOV / 45% SPGM allocation, approximately 7.14% net return, approximately 6.8% annualized volatility, and a feasible PASS.
+- Expected decision effect: PILOT remains; this change alone does not clear the DGS10 adoption gate.
+- Failure condition: Prediction.docx states that a move of 20 or more points would breach stability. The gate is strictly more than 20 points, so exactly 20 points remains within the limit; this threshold detail was incorrect in the prediction.
+- Prediction commit hash: `a9b40bf6c5b240b8a5046ef67fe1c1b18800573b` (GitHub commit adding `Prediction.docx`).
 
 ## Post-run result
 
@@ -22,7 +22,7 @@ preserve the before/after output and result commit.
 - Decision changed or unchanged: Unchanged. The portfolio passes the higher return floor, but the overall recommendation remains PILOT because the DGS10 adoption gate remains blocked. The stress output also continues to report a 25-point maximum asset change from the base across specified stresses.
 - Prediction matched, partly matched, or failed: Partly matched. The predicted 55% / 45% allocation, approximately 7.14% net return, approximately 6.8% volatility, feasibility, and unchanged PILOT decision match the after output. The stated failure condition should say a move of more than 20 points breaches the stability gate; exactly 20 points meets the limit.
 - Explanation or failure diagnosis: Raising the net-return objective from 6.5% to 7.0% changes the selected portfolio from 60% SGOV / 40% SPGM to 55% SGOV / 45% SPGM. On the five-point grid, the new portfolio clears the floor at 7.14% net return. Its benchmark-relative one-way turnover is 55%, producing an 11-basis-point cost under the stated 20-basis-point convention. Volatility increases to 6.76%. All four specified stresses remain feasible. The changed objective alone does not alter the committee recommendation.
-- Result commit hash:
+- Result commit hash: `84f9091` (before and after output files added to the repository).
 
 The existing automated one-point SPGM stress validates propagation, but it is not represented as
 the required human-authored, AI-off, precommitted record.
